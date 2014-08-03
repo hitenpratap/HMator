@@ -1,13 +1,22 @@
-import random
+from datetime import datetime
 
 import kronos
 
+from mainApp.models import User
 
-@kronos.register('17 23 * * *')
+
+@kronos.register('* * * * *')
 def complain():
-    complaints = [
-        "I forgot to migrate our applications's cron jobs to our new server! Darn!",
-        "I'm out of complaints! Damnit!"
-    ]
+    postInfo = {'06:00': 'Good Morning..', '09:00': 'Good Day..', '13:00': 'Good AfterNoon..',
+                '18:00': 'Good Evening..', '22:00': 'Good Night..'}
+    currentTime = datetime.now().strftime('%H:%M')
+    if currentTime in postInfo.keys():
+        statusText = postInfo.get(currentTime)
+        fbSettings = User.objects.get(serviceType='FACEBOOK')
+        # postStatusToFaceBook(fbSettings.accessToken,statusText)
 
-    print random.choice(complaints)
+    else:
+        statusText = 'Test Message'
+        fbSettings = User.objects.get(serviceType='FACEBOOK')
+        # postStatusToFaceBook(fbSettings.accessToken,currentTime + statusText)
+
