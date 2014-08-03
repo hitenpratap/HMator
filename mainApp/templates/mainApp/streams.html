@@ -1,0 +1,45 @@
+{% extends "mainApp/index.html" %}
+
+{% block statusForm %}{% include "mainApp/statusForm.html" %}{% endblock %}
+
+{% block flashMessages %}
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                    class="sr-only">Close</span></button>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
+
+{% block FBStatuses %}
+    {% if fbSettings %}
+        <p><a class="btn btn-primary disabled" href="javascript:void(0)" role="button">Connected
+            as {{ fbSettings.fullName }}</a></p>
+
+        <div class="text-success text-center"> Recent Updates</div>
+        {% for post in fbPosts %}
+            <div class="block-update-card">
+                <div class="v-status">
+                </div>
+                <div class="update-card-body">
+                    <h4>{{ fbSettings.fullName }}</h4>
+                    {% if post.message %}
+                        <p>{{ post.message }} | <a target="_blank" href="http://facebook.com/{{ post.id }}">Go</a></p>
+                    {% endif %}
+                    {% if post.story %}
+                        <p>{{ post.story }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <p><a class="btn btn-primary" href="javascript:void(0)" role="button">Connect to Facebook</a></p>
+    {% endif %}
+
+{% endblock %}

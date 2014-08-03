@@ -1,0 +1,22 @@
+<div id="wrapper" class="col-lg-12">
+            <form role="form" id="sign-up_area" method="post" id="postStatus" action="postStatus.html/">
+                {% csrf_token %}
+                <br/>
+                <!-- Textarea -->
+                <textarea class="form-control" name="status" id="status" placeholder="Do you want to add a message?"></textarea>
+
+                <br/>
+                <div class="form-group">
+                    <label for="facebook" class="checkbox-inline">
+                        <input type="checkbox" name="facebook" class="input_checkboxitem"> Facebook </label>
+                    <label for="twitter" class="checkbox-inline">
+                        <input type="checkbox" name="twitter" class="input_checkboxitem"> Twitter </label>
+                    <label for="Google+" class="checkbox-inline">
+                        <input type="checkbox" name="Google+" class="input_checkboxitem"> Google+ </label>
+                    <span class="pull-right"><input class="btn btn-primary" type="submit" role="button" value="Post Status To Selected Service(es)"></span>
+                    <br/><br/><br/><br/>
+                </div>
+
+            </form>
+
+        </div>
