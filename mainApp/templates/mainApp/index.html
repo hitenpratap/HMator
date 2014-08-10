@@ -12,13 +12,14 @@
 <div class="container">
 
     <div class="masthead">
-        <h3 class="text-muted">HMator</h3>
+        <h3 class="text-muted">HMator {% if user.is_authenticated %}[<a href="logout/">Logout</a>]
+            <span class="pull-right text-info">Welcome {{ user.get_full_name }}</span>{% endif %}</h3>
         <ul class="nav nav-justified">
             <li class="active"><a href="javascript:void(0)">Home</a></li>
-            <li><a href="javascript:void(0)">Projects</a></li>
-            <li><a href="javascript:void(0)">Services</a></li>
-            <li><a href="javascript:void(0)">Downloads</a></li>
-            <li><a href="javascript:void(0)">About</a></li>
+            <li><a href="javascript:void(0)">Settings</a></li>
+{#            <li><a href="javascript:void(0)">Services</a></li>#}
+{#            <li><a href="javascript:void(0)">Downloads</a></li>#}
+{#            <li><a href="javascript:void(0)">About</a></li>#}
             <li><a href="javascript:void(0)">Contact</a></li>
         </ul>
     </div>

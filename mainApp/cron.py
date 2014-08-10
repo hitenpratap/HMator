@@ -2,7 +2,7 @@ from datetime import datetime
 
 import kronos
 
-from mainApp.models import User
+from mainApp.models import UserProfile
 
 
 @kronos.register('* * * * *')
@@ -12,11 +12,11 @@ def complain():
     currentTime = datetime.now().strftime('%H:%M')
     if currentTime in postInfo.keys():
         statusText = postInfo.get(currentTime)
-        fbSettings = User.objects.get(serviceType='FACEBOOK')
+        fbSettings = UserProfile.objects.get(serviceType='FACEBOOK')
         # postStatusToFaceBook(fbSettings.accessToken,statusText)
 
     else:
         statusText = 'Test Message'
-        fbSettings = User.objects.get(serviceType='FACEBOOK')
+        fbSettings = UserProfile.objects.get(serviceType='FACEBOOK')
         # postStatusToFaceBook(fbSettings.accessToken,currentTime + statusText)
 
