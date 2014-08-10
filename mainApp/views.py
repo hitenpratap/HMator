@@ -85,7 +85,7 @@ def streamPage(request):
             return render(request, 'mainApp/streams.html', context)
         except UserSocialProfile.DoesNotExist:
             messages.add_message(request, messages.INFO, 'Facebook account is not connected.')
-            return redirect('/HMator/streamPage')
+            return render(request, 'mainApp/streams.html')
     else:
         messages.add_message(request, messages.WARNING, 'Please login before continue.')
         return redirect("/HMator/")
