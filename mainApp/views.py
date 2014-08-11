@@ -31,6 +31,9 @@ def signUpUser(request):
         user.save()
         mainUser = MainUser(mobile = request.POST['mobile'],user=user)
         mainUser.save()
+        user = authenticate(username=userMail, password=userPass)
+        login(request,user)
+        return redirect("/HMator/streamPage")
     else:
         messages.add_message(request, messages.WARNING, 'Incorrect Information. Please try again.')
         return render(request, 'mainApp/registration.html', {'viewPage': 'signupbox'})
