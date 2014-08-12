@@ -148,17 +148,18 @@ def getFacebookInfo(request):
 def postStatus(request):
     statusText = request.POST['status']
     if statusText:
-        if request.POST['facebook']:
-            fbSettings = UserSocialProfile.objects.get(serviceType='FACEBOOK',user=request.user)
-        if request.POST['twitter']:
-            twitterSettings = UserSocialProfile.objects.get(serviceType='TWITTER',user=request.user)
         try:
-            if fbSettings and postStatusToFaceBook(fbSettings.accessToken, statusText):
-                request.session['fbStatus'] = 'posted'
-            if twitterSettings and postStatusToTwitter(twitterSettings.accessToken,twitterSettings.accessTokenSecret, statusText):
-                request.session['twitterStatus'] = 'posted'
-            request.session['statusPost'] = True
-            return redirect('/HMator/streamPage')
+            if request.POST.get('facebook'):
+                fbSettings = UserSocialProfile.objects.get(serviceType='FACEBOOK', user=request.user)
+                if fbSettings and postStatusToFaceBook(fbSettings.accessToken, statusText):
+                    request.session['fbStatus'] = 'posted'
+            if request.POST.get('twitter'):
+                twitterSettings = UserSocialProfile.objects.get(serviceType='TWITTER', user=request.user)
+                if twitterSettings and postStatusToTwitter(twitterSettings.accessToken,
+                                                           twitterSettings.accessTokenSecret, statusText):
+                    request.session['twitterStatus'] = 'posted'
+                request.session['statusPost'] = True
+                return redirect('/HMator/streamPage')
         except UserSocialProfile.DoesNotExist:
             messages.add_message(request, messages.INFO, 'Facebook account is not connected.')
             return redirect('/HMator/streamPage')
