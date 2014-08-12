@@ -27,6 +27,7 @@ from django.db import models
 #         result = urllib2.urlopen(postsUrl)
 #         posts = json.load(result)
 #         return posts['posts']['data']
+from twython import Twython
 
 
 class MainUser(models.Model):
@@ -38,11 +39,12 @@ class UserSocialProfile(models.Model):
     user = models.ForeignKey(User)
     userSocialId = models.CharField(max_length=200)
     accessToken = models.CharField(max_length=300)
+    accessTokenSecret = models.CharField(max_length=300,null=True,blank=True)
     creationDate = models.DateTimeField(auto_now_add=True)
     fullName = models.CharField(max_length=300)
-    firstName = models.CharField(max_length=300)
-    lastName = models.CharField(max_length=300)
-    emailAddress = models.CharField(max_length=300)
+    firstName = models.CharField(max_length=300,null=True,blank=True)
+    lastName = models.CharField(max_length=300,null=True,blank=True)
+    emailAddress = models.CharField(max_length=300,null=True,blank=True)
     serviceType = models.TextField(default='FACEBOOK')
 
     def getLatestStreamFacebook(self):
@@ -51,6 +53,12 @@ class UserSocialProfile(models.Model):
         result = urllib2.urlopen(postsUrl)
         posts = json.load(result)
         return posts['posts']['data']
+
+    def getLatestStreamTwitter(self):
+        appId = "APTPUD7sMzwe93QJMBkdoWylw"
+        appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+        twitter = Twython(appId,appSecret,self.accessToken,self.accessTokenSecret)
+        return twitter.get_home_timeline(count=6)
 
 
 
@@ -65,6 +73,17 @@ def postStatusToFaceBook(accessToken, messageText):
         return True
     else:
         return False
+
+def postStatusToTwitter(accessToken,accessTokenSecret, messageText):
+    appId = "APTPUD7sMzwe93QJMBkdoWylw"
+    appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+    twitter = Twython(appId,appSecret,accessToken,accessTokenSecret)
+    status = twitter.update_status(status=messageText)
+    if status['id']:
+        return True
+    else:
+        return False
+
 
 
 
