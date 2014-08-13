@@ -58,7 +58,7 @@ class UserSocialProfile(models.Model):
         appId = "APTPUD7sMzwe93QJMBkdoWylw"
         appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
         twitter = Twython(appId,appSecret,self.accessToken,self.accessTokenSecret)
-        return twitter.get_home_timeline(count=6)
+        return twitter.get_home_timeline(count=5)
 
 
 

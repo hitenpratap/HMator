@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
-    'kronos',
+    'django_crontab',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -48,6 +48,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+CRONJOBS = [
+    ('*/1 * * * *', 'mainApp.cron.my_scheduled_job')
+]
 
 ROOT_URLCONF = 'HMator.urls'
 
