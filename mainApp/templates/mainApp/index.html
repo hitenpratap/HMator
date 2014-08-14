@@ -4,9 +4,10 @@
     <title>HMator | Hiten Pratap Singh</title>
     <link rel="stylesheet" type="text/css" href="{% static 'mainApp/bootstrap.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'mainApp/justified-nav.css' %}"/>
-       <link rel="stylesheet" type="text/css" href="{% static 'mainApp/stream.css' %}"/>
-  <script type="text/javascript" src="{% static 'mainApp/jquery-2.0.3.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'mainApp/bootstrap.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'mainApp/stream.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'mainApp/buttons.css' %}"/>
+    <script type="text/javascript" src="{% static 'mainApp/jquery-2.0.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mainApp/bootstrap.js' %}"></script>
 </head>
 <body>
 <div class="container">
@@ -15,14 +16,14 @@
         <h3 class="text-muted">HMator {% if user.is_authenticated %}[<a href="logout/">Logout</a>]
             <span class="pull-right text-info">Welcome {{ user.get_full_name }}</span>{% endif %}</h3>
         <ul class="nav nav-justified">
-            <li class="active"><a href="javascript:void(0)">Home</a></li>
-            <li><a href="javascript:void(0)">Settings</a></li>
+            <li class="active"><a href="/HMator/streamPage">Home</a></li>
+            <li><a href="/HMator/settingsPage">Settings</a></li>
             <li><a href="javascript:void(0)">Contact</a></li>
         </ul>
     </div>
 
 
-{% block flashMessages %}{% endblock %}
+    {% block flashMessages %}{% endblock %}
     <!-- Jumbotron -->
     {% block statusForm %}
 
@@ -38,10 +39,12 @@
             {% block TwitterStatuses %}{% endblock %}
         </div>
         <div class="col-lg-4">
-            <p><a class="btn btn-primary" href="javascript:void(0)" role="button">Connect to Google+</a></p>
             {% block GooglePlusStatuses %}{% endblock %}
         </div>
     </div>
+
+    {% block settingsPage %}
+    {% endblock %}
 
     <!-- Site footer -->
     <div class="footer">

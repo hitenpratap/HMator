@@ -1,0 +1,66 @@
+{% extends "mainApp/index.html" %}
+
+{% block flashMessages %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h3 class="text-success">Personal Settings</h3>
+{% endblock %}
+{% block settingsPage %}
+    <form name="personalSettingsForm" action="/HMator/updateUserSettings/" id="personalSettingsForm" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="userId" id="userId" value="{{ user.id }}" />
+    <div class="row form-group">
+        <div class="col-xs-6">
+            <label>First Name</label>
+
+            <div>
+                <input type="text" name="firstName" class="form-control" value="{{ user.first_name }}">
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <label>Last Name</label>
+
+            <div>
+                <input type="text" name="lastName" class="form-control" value="{{ user.last_name }}">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row form-group">
+        <div class="col-xs-6">
+            <label>Email Address</label>
+
+            <div>
+                <input type="text" name="email" class="form-control" value="{{ user.email }}" disabled>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <label>Phone Number</label>
+
+            <div>
+                <input type="text" name="phoneNumber" class="form-control" value="{{ user.mainUser.mobile }}">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row form-group">
+        <div class="col-xs-6">
+            <span class="text-info">Account Connected:</span> {% for account in accountList %}<a href="javascript:void(0)" class="btn btn-success btn-outline">{{ account|lower|capfirst }}</a> &nbsp;{% endfor %}
+       </div>
+       <div class="col-xs-6">
+            <input type="submit" name="submitPersonalSettingsForm" value="Update Settings" class=" col-md-12 btn btn-primary btn-outline btn-group-lg pull-right">
+       </div>
+    </div>
+    </form>
+{% endblock %}
+

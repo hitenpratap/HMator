@@ -11,23 +11,12 @@ from django.db import models
 
 # Create your models here.
 
-
-# class UserProfile(User):
-#     userSocialId = models.CharField(max_length=200)
-#     mobileNumber = models.IntegerField(max_length=20, null=True)
-#     accessToken = models.CharField(max_length=300)
-#     creationDate = models.DateTimeField(auto_now_add=True)
-#     fullName = models.CharField(max_length=300)
-#     serviceType = models.TextField(default='FACEBOOK')
-#
-#
-#     def getLatestStreamFacebook(self):
-#         fields = "posts.limit(5).fields(description,created_time,name,actions,status_type,message,story)"
-#         postsUrl = "https://graph.facebook.com/v2.0/me?access_token=" + self.accessToken + "&fields=" + fields
-#         result = urllib2.urlopen(postsUrl)
-#         posts = json.load(result)
-#         return posts['posts']['data']
 from twython import Twython
+
+class SocialMessage(models.Model):
+    user = models.ForeignKey(User)
+    messageTime = models.DateTimeField()
+    messageContent = models.TextField()
 
 
 class MainUser(models.Model):

@@ -78,8 +78,8 @@ def streamPage(request):
     if request.user.is_authenticated():
         try:
             user = request.user
-            fbSettings = UserSocialProfile.objects.get(serviceType='FACEBOOK',user=user)
-            twitterSettings = UserSocialProfile.objects.get(serviceType='TWITTER',user=user)
+            fbSettings = UserSocialProfile.objects.get(serviceType='FACEBOOK', user=user)
+            twitterSettings = UserSocialProfile.objects.get(serviceType='TWITTER', user=user)
             fbPosts = fbSettings.getLatestStreamFacebook()
             twitterPosts = twitterSettings.getLatestStreamTwitter()
             if request.session.get('statusPost'):
@@ -92,7 +92,8 @@ def streamPage(request):
             request.session['statusPost'] = None
             request.session['fbStatus'] = None
             request.session['twitterStatus'] = None
-            context = {'fbSettings': fbSettings, 'fbPosts': fbPosts,'twitterSettings':twitterSettings,'twitterPosts':twitterPosts}
+            context = {'fbSettings': fbSettings, 'fbPosts': fbPosts, 'twitterSettings': twitterSettings,
+                       'twitterPosts': twitterPosts}
             return render(request, 'mainApp/streams.html', context)
         except UserSocialProfile.DoesNotExist:
             messages.add_message(request, messages.INFO, 'Facebook account is not connected.')
@@ -183,7 +184,6 @@ def connectToTwitter(request):
     return redirect(auth['auth_url'])
 
 
-
 def saveTwitterSettings(request):
     if request.session.get('OAUTH_TOKEN_SECRET') and request.session.get('OAUTH_TOKEN'):
         user = request.user
@@ -192,7 +192,7 @@ def saveTwitterSettings(request):
         OAUTH_TOKEN = request.session.get('OAUTH_TOKEN')
         OAUTH_TOKEN_SECRET = request.session.get('OAUTH_TOKEN_SECRET')
         oauth_verifier = request.GET['oauth_verifier']
-        twitter = Twython(appId, appSecret,OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+        twitter = Twython(appId, appSecret, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
         final_step = twitter.get_authorized_tokens(oauth_verifier)
         FOAUTH_TOKEN = final_step['oauth_token']
         FOAUTH_TOKEN_SECERT = final_step['oauth_token_secret']
@@ -210,16 +210,51 @@ def getTwitterInfo(request):
         accessTokenSecret = request.session.get('FOAUTH_TOKEN_SECERT')
         appId = "APTPUD7sMzwe93QJMBkdoWylw"
         appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
-        twitter = Twython(appId,appSecret,accessToken,accessTokenSecret)
+        twitter = Twython(appId, appSecret, accessToken, accessTokenSecret)
         content = twitter.verify_credentials()
         print(content['id'])
-        twitterSettings = UserSocialProfile(userSocialId=content['id'],accessToken=accessToken,accessTokenSecret=accessTokenSecret,
-                                            serviceType='TWITTER',fullName=content['name'], user=user)
+        twitterSettings = UserSocialProfile(userSocialId=content['id'], accessToken=accessToken,
+                                            accessTokenSecret=accessTokenSecret,
+                                            serviceType='TWITTER', fullName=content['name'], user=user)
         print(content['name'])
         twitterSettings.save()
         return redirect("/HMator/streamPage")
     else:
         return redirect("/HMator/saveTwitterSettings")
+
+
+def settingsPage(request):
+    if request.user.is_authenticated():
+        currentUser = request.user
+        userSocialProfileList = UserSocialProfile.objects.filter(user=currentUser)
+        accountList = []
+        for userSocialProfile in userSocialProfileList:
+            accountList.append(userSocialProfile.serviceType)
+        return render(request, 'mainApp/settings.html', {'user': currentUser, 'accountList': accountList})
+    else:
+        messages.add_message(request, messages.WARNING,
+                             'Please login to continue.')
+        return redirect('/HMator/')
+
+
+def updateUserSettings(request):
+    mainUser = MainUser.objects.get(id=request.POST['userId'])
+    if mainUser:
+        print(request.POST['firstName'])
+        mainUser.user.first_name = request.POST['firstName']
+        mainUser.user.last_name = request.POST['lastName']
+        mainUser.mobile = request.POST['phoneNumber']
+        mainUser.user.save(force_update=True)
+        mainUser.save(force_update=True)
+        messages.add_message(request, messages.INFO,
+                             'User settings updated successfully.')
+        return redirect("/HMator/settingsPage")
+    else:
+        messages.add_message(request, messages.WARNING,
+                             'Something went wrong. Please try again.')
+        return redirect("/HMator/settingsPage")
+
+
 
 
 
