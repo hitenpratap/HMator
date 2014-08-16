@@ -11,56 +11,98 @@
             </div>
         {% endfor %}
     {% endif %}
-    <h3 class="text-success">Personal Settings</h3>
 {% endblock %}
+
+
+
 {% block settingsPage %}
-    <form name="personalSettingsForm" action="/HMator/updateUserSettings/" id="personalSettingsForm" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="userId" id="userId" value="{{ user.id }}" />
-    <div class="row form-group">
-        <div class="col-xs-6">
-            <label>First Name</label>
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="text-success">Personal Settings</h3>
 
-            <div>
-                <input type="text" name="firstName" class="form-control" value="{{ user.first_name }}">
-            </div>
+            <form name="personalSettingsForm" action="/HMator/updateUserSettings/" id="personalSettingsForm"
+                  method="post">
+                {% csrf_token %}
+                <input type="hidden" name="userId" id="userId" value="{{ user.id }}"/>
+
+                <div class="form-group">
+                    <label>First Name</label>
+
+                    <div>
+                        <input type="text" name="firstName" class="form-control" value="{{ user.first_name }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+
+                    <div>
+                        <input type="text" name="lastName" class="form-control" value="{{ user.last_name }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+
+                    <div>
+                        <input type="text" name="email" class="form-control" value="{{ user.email }}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+
+                    <div>
+                        <input type="text" name="phoneNumber" class="form-control" value="{{ user.mainUser.mobile }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="text-info"><i class="glyphicon glyphicon-user"></i> Account Connected:</span> {% for account in accountList %}
+                    <a href="javascript:void(0)" class="btn btn-success btn-outline">{{ account|lower|capfirst }}</a>
+                    &nbsp;{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" name="submitPersonalSettingsForm" value="Update Settings"
+                           class=" col-md-12 btn btn-primary btn-outline btn-group-lg">
+
+                </div>
+
+
+            </form>
         </div>
-        <div class="col-xs-6">
-            <label>Last Name</label>
+        <div class="col-md-6">
+            <h3 class="text-success">Messages<a href="javascript:void(0)" class="pull-right btn btn-xs btn-danger btn-outline" id="delAllSocialMessageListBtn"><i class="glyphicon glyphicon-remove"></i> Delete
+                All</a> </h3>
 
-            <div>
-                <input type="text" name="lastName" class="form-control" value="{{ user.last_name }}">
+            <div id="socialMessageListDiv">
+                {% include "mainApp/socialMessageList.html" with socialMessages=socialMessages %}
             </div>
-        </div>
 
+        </div>
     </div>
 
-    <div class="row form-group">
-        <div class="col-xs-6">
-            <label>Email Address</label>
+    <script>
+        $(document).ready(function () {
+            $('.messageTime').mask('00:00');
+        })
 
-            <div>
-                <input type="text" name="email" class="form-control" value="{{ user.email }}" disabled>
-            </div>
-        </div>
-        <div class="col-xs-6">
-            <label>Phone Number</label>
+        $("#delAllSocialMessageListBtn").click(function () {
+            if (confirm("Are you sure?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/HMator/deleteAllSocialMessage/",
+                    data:{csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success: function (data) {
+                        $("#socialMessageListDiv").html(data)
+                        $("#socialMessageListDiv").effect('highlight')
+                    }
+                })
+            }
+        })
 
-            <div>
-                <input type="text" name="phoneNumber" class="form-control" value="{{ user.mainUser.mobile }}">
-            </div>
-        </div>
+    </script>
 
-    </div>
-
-    <div class="row form-group">
-        <div class="col-xs-6">
-            <span class="text-info">Account Connected:</span> {% for account in accountList %}<a href="javascript:void(0)" class="btn btn-success btn-outline">{{ account|lower|capfirst }}</a> &nbsp;{% endfor %}
-       </div>
-       <div class="col-xs-6">
-            <input type="submit" name="submitPersonalSettingsForm" value="Update Settings" class=" col-md-12 btn btn-primary btn-outline btn-group-lg pull-right">
-       </div>
-    </div>
-    </form>
 {% endblock %}
 

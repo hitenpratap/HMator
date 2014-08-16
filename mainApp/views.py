@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 import urllib2
 
@@ -5,16 +6,17 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 
 
 
 
 
 # Create your views here.
+from django.views.decorators.csrf import csrf_exempt
 import tweetpony
 from twython import Twython
-from mainApp.models import postStatusToFaceBook, MainUser, UserSocialProfile, postStatusToTwitter
+from mainApp.models import postStatusToFaceBook, MainUser, UserSocialProfile, postStatusToTwitter, SocialMessage
 
 
 def registration(request):
@@ -75,6 +77,8 @@ def signOut(request):
 
 
 def streamPage(request):
+    print(datetime.now().time())
+    request.session['currentUserId']=request.user.id
     if request.user.is_authenticated():
         try:
             user = request.user
@@ -128,7 +132,7 @@ def saveFacebookSettings(request):
 
 def getFacebookInfo(request):
     if request.session.get('accessToken'):
-        user = request.user
+        user = MainUser.objects.get(user=request.user)
         accessToken = request.session.get('accessToken')
         requestedFields = "first_name,last_name,email,name"
         requestUrl = "https://graph.facebook.com/me?fields=" + requestedFields + "&access_token=" + accessToken
@@ -144,6 +148,34 @@ def getFacebookInfo(request):
 
     else:
         return redirect("/HMator/connectToFacebook")
+@csrf_exempt
+def autoMaticPostStatus(request):
+    print(request.POST)
+    print(request.session.get('currentUserId'))
+    user = User.objects.get(id=1)
+    mainUser = MainUser.objects.get(user=user)
+    print("-------------------------------------------------------------------")
+    twitterSettings = UserSocialProfile.objects.get(user=mainUser,serviceType='TWITTER')
+    fbSettings = UserSocialProfile.objects.get(user=mainUser,serviceType='FACEBOOK')
+
+    messageList = SocialMessage.objects.filter(user=mainUser)
+    currentTime = datetime.now().time()
+    print(currentTime)
+    print(messageList)
+    for msg in messageList:
+        print(msg.messageContent)
+        if currentTime.hour==msg.messageTime.hour:
+            print("***********************************************************************")
+            print(msg.messageContent)
+            # if fbSettings is not None:
+                # postStatusToFaceBook(fbSettings.accessToken,msg.messageContent)
+            # if twitterSettings is not None:
+            #     postStatusToTwitter(twitterSettings.accessToken,twitterSettings.accessTokenSecret,msg.messageContent)
+
+    # return 'Post Messages'
+
+
+
 
 
 def postStatus(request):
@@ -205,7 +237,7 @@ def saveTwitterSettings(request):
 
 def getTwitterInfo(request):
     if request.session.get('FOAUTH_TOKEN') and request.session.get('FOAUTH_TOKEN_SECERT'):
-        user = request.user
+        user = MainUser.objects.get(user=request.user)
         accessToken = request.session.get('FOAUTH_TOKEN')
         accessTokenSecret = request.session.get('FOAUTH_TOKEN_SECERT')
         appId = "APTPUD7sMzwe93QJMBkdoWylw"
@@ -225,12 +257,13 @@ def getTwitterInfo(request):
 
 def settingsPage(request):
     if request.user.is_authenticated():
-        currentUser = request.user
-        userSocialProfileList = UserSocialProfile.objects.filter(user=currentUser)
+        mainUser = MainUser.objects.get(user=request.user)
+        userSocialProfileList = UserSocialProfile.objects.filter(user=mainUser)
         accountList = []
         for userSocialProfile in userSocialProfileList:
             accountList.append(userSocialProfile.serviceType)
-        return render(request, 'mainApp/settings.html', {'user': currentUser, 'accountList': accountList})
+        socialMessages = SocialMessage.objects.filter(user=mainUser)
+        return render(request, 'mainApp/settings.html', {'user': request.user, 'accountList': accountList,'socialMessages':socialMessages})
     else:
         messages.add_message(request, messages.WARNING,
                              'Please login to continue.')
@@ -253,6 +286,36 @@ def updateUserSettings(request):
         messages.add_message(request, messages.WARNING,
                              'Something went wrong. Please try again.')
         return redirect("/HMator/settingsPage")
+
+def saveSocialMessages(request):
+    mainUser = MainUser.objects.get(user=request.user)
+    messageTextList = request.POST.getlist('messageText')
+    messageHourList = request.POST.getlist('messageHour')
+    messageMinList = request.POST.getlist('messageMin')
+
+    existMessages = SocialMessage.objects.filter(user=mainUser)
+    for msg in existMessages:
+        msg.delete()
+
+    for idx,messageText in enumerate(messageTextList):
+        if messageHourList[idx]!='' and messageText!='':
+            socialMessage = SocialMessage(user=mainUser,messageContent=messageText,messageTime=datetime.now().replace(hour=int(messageHourList[idx]),minute=int(messageMinList[idx])).time())
+            socialMessage.save()
+
+    messages.add_message(request, messages.INFO,
+                             'Messages saved successfully.')
+    return redirect("/HMator/settingsPage")
+
+
+def deleteAllSocialMessage(request):
+    user = MainUser.objects.get(user = request.user)
+    existMessages = SocialMessage.objects.filter(user=user)
+    for msg in existMessages:
+        msg.delete()
+    return render_to_response('mainApp/socialMessageList.html')
+
+
+
 
 
 

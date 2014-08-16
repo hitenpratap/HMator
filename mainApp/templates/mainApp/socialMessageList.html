@@ -1,0 +1,78 @@
+<form name="messagesForm" id="messagesForm" method="post" action="/HMator/saveSocialMessages/">
+                {% csrf_token %}
+                <div class="col-md-8 form-group">
+                    <label>Messages</label>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <label>Hour</label>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <label>Min</label>
+                </div>
+
+                {% for socialMessage in socialMessages %}
+                    <div class="col-md-8 form-group">
+                    <div>
+                        <textarea type="text" name="messageText" class="form-control" >{{ socialMessage.messageContent }}</textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageHour" class="messageTime form-control" value="{{ socialMessage.messageTime.hour }}">
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageMin" class="messageTime form-control" value="{{ socialMessage.messageTime.minute }}">
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="col-md-8 form-group">
+                    <div>
+                        <textarea type="text" name="messageText" class="form-control" ></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageHour" class="messageTime form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageMin" class="messageTime form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-8 form-group">
+                    <div>
+                        <textarea type="text" name="messageText" class="form-control" ></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageHour" class="messageTime form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-2 form-group">
+                    <div>
+                        <input type="text" name="messageMin" class="messageTime form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-12 form-group">
+                    <div>
+                        <input type="submit" name="submitPersonalSettingsForm" value="Save Settings"
+                           class=" col-md-12 btn btn-primary btn-outline btn-group-lg">
+                    </div>
+                </div>
+
+            </form>

@@ -13,19 +13,18 @@ from django.db import models
 
 from twython import Twython
 
-class SocialMessage(models.Model):
-    user = models.ForeignKey(User)
-    messageTime = models.DateTimeField()
-    messageContent = models.TextField()
-
-
 class MainUser(models.Model):
     user = models.OneToOneField(User, related_name='mainUser')
     mobile = models.CharField(max_length=10)
 
+class SocialMessage(models.Model):
+    user = models.ForeignKey(MainUser)
+    messageTime = models.TimeField()
+    messageContent = models.TextField()
+
 
 class UserSocialProfile(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(MainUser)
     userSocialId = models.CharField(max_length=200)
     accessToken = models.CharField(max_length=300)
     accessTokenSecret = models.CharField(max_length=300,null=True,blank=True)
