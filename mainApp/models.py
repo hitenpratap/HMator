@@ -43,8 +43,8 @@ class UserSocialProfile(models.Model):
         return posts['posts']['data']
 
     def getLatestStreamTwitter(self):
-        appId = "APTPUD7sMzwe93QJMBkdoWylw"
-        appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+        appId = "Use your api key" 
+        appSecret = "Use your api key"
         twitter = Twython(appId,appSecret,self.accessToken,self.accessTokenSecret)
         return twitter.get_home_timeline(count=5)
 
@@ -63,8 +63,8 @@ def postStatusToFaceBook(accessToken, messageText):
         return False
 
 def postStatusToTwitter(accessToken,accessTokenSecret, messageText):
-    appId = "APTPUD7sMzwe93QJMBkdoWylw"
-    appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+    appId = "Use your api key"
+    appSecret = "Use your api key"
     twitter = Twython(appId,appSecret,accessToken,accessTokenSecret)
     status = twitter.update_status(status=messageText)
     if status['id']:
