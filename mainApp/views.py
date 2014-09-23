@@ -108,7 +108,7 @@ def streamPage(request):
 
 
 def connectToFacebook(request):
-    appId = "308183336030888"
+    appId = "Use your api key"
     scope = "user_about_me,publish_actions,read_stream"
     redirectUrl = "http://127.0.0.1:8000/HMator/facebook"
     fbUrl = "http://graph.facebook.com/oauth/authorize?client_id=" + appId + "&redirect_uri=" + redirectUrl + "&scope=" + scope
@@ -118,8 +118,8 @@ def connectToFacebook(request):
 
 def saveFacebookSettings(request):
     redirectUrl = "http://127.0.0.1:8000/HMator/facebook"
-    appId = "308183336030888"
-    appSecret = "0830a39d4b3c3a1660b26f1db7cf6933"
+    appId = "Use your api key"
+    appSecret = "Use your api key"
     code = request.GET['code']
     facebookAccessTokenUrl = "https://graph.facebook.com/oauth/access_token?client_id=" + appId + "&redirect_uri=" + redirectUrl + "&client_secret=" + appSecret + "&code=" + code
     fbResponse = urllib2.urlopen(facebookAccessTokenUrl).read()
@@ -203,8 +203,8 @@ def postStatus(request):
 
 
 def connectToTwitter(request):
-    appId = "APTPUD7sMzwe93QJMBkdoWylw"
-    appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+    appId = "Use your api key"
+    appSecret = "Use your api key"
     twitter = Twython(appId, appSecret)
     auth = twitter.get_authentication_tokens(callback_url='http://127.0.0.1:8000/HMator/saveTwitterSettings/')
     OAUTH_TOKEN = auth['oauth_token']
@@ -219,8 +219,8 @@ def connectToTwitter(request):
 def saveTwitterSettings(request):
     if request.session.get('OAUTH_TOKEN_SECRET') and request.session.get('OAUTH_TOKEN'):
         user = request.user
-        appId = "APTPUD7sMzwe93QJMBkdoWylw"
-        appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+        appId = "Use your api key"
+        appSecret = "Use your api key"
         OAUTH_TOKEN = request.session.get('OAUTH_TOKEN')
         OAUTH_TOKEN_SECRET = request.session.get('OAUTH_TOKEN_SECRET')
         oauth_verifier = request.GET['oauth_verifier']
@@ -240,8 +240,8 @@ def getTwitterInfo(request):
         user = MainUser.objects.get(user=request.user)
         accessToken = request.session.get('FOAUTH_TOKEN')
         accessTokenSecret = request.session.get('FOAUTH_TOKEN_SECERT')
-        appId = "APTPUD7sMzwe93QJMBkdoWylw"
-        appSecret = "O4iNXzuUWaXITkmmpDQLDmOAWz8tsDAQdh5pbTy7W7exFWyjl0"
+        appId = "Use your api key"
+        appSecret = "Use your api key"
         twitter = Twython(appId, appSecret, accessToken, accessTokenSecret)
         content = twitter.verify_credentials()
         print(content['id'])
