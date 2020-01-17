@@ -68,7 +68,7 @@ six==1.5.2
 software-center-aptd-plugins==0.0.0
 ssh-import-id==3.21
 system-service==0.1.6
-urllib3==1.7.1
+urllib3==1.24.2
 wadllib==1.3.2
 wsgiref==0.1.2
 xdiagnose==3.6.3build2
